@@ -1,0 +1,523 @@
+                                                    
+    ----------------------------------------------------------------------
+    ##  "There come a time, when good men must wear mask.....kemosabe"  ##
+    ----------------------------------------------------------------------
+       _  _                  __  .__                          #FREEHAMMOND
+    __| || |_______    _____/  |_|__| ______ ____   ____      #FREEASSANGE
+    \   __   /\__  \  /    \   __\  |/  ___// __ \_/ ___\     #FREECHELSEA
+     |  ||  |  / __ \|   |  \  | |  |\___ \\  ___/\  \___     #FREESNOWDEN
+    /_  ~~  _\(____  /___|  /__| |__/____  >\___  >\___  >    #FREEBARRETT
+      |_||_|       \/     \/             \/     \/     \/     #FREEANONS16
+                                                              #FREELULZSEC
+    ----------------------------------------------------------------------
+    ----------------------------------------------------------------------
+    ##              ohai feds!!! we're still alive.                     ##
+    ## the best trick ever pulled was to convince FBI they can catch us ##
+    ----------------------------------------------------------------------
+         every single line of code is, today, equal to a magic spell.
+           Magic that's able to change how things work around you, 
+                    and eventually...the world itself.
+    ----------------------------------------------------------------------
+		
+	
+    hi guise!!! <333
+    so well...
+    Hammond was sentenced to 10 years of prison for being a 
+    political dissident, doing what he felt was the right thing.
+    it was the second time he was jailed cause some coward betrayed him.
+    you are probably asking yourself: why did he start hacking again after 
+    being in prison the first time? well, Hammond was an honest idealist, 
+    who blindly hated a system that rips off all freedom and humanity 
+    from us. and he hated this to the point of trading 
+    his own freedom on the fight, because nobody can understand better 
+    how precious and fragile freedom is, than those ones who have lost theirs once.
+	
+    now he is being tortured by prison authorities and he is often kept in 
+    total isolation whilst the coward of Sabu lives dressed on silk 
+    kimonos and gets pimped in secret by FBI. 
+    yeah we know, rapists and other shits get less punishment. 
+    things are fucked up, but nobody seems to care to change this.
+    
+    so..
+    our greetings then for all those ones who have sacrificed their own 
+    comfort and freedom to tell us the truth.
+    hammond, julian, snowden, chelsea(the hacker former known as brad),
+    aaron and many others around the world, specially those ones
+    whose existence will never be noticed by the world, those who save 
+    our world everyday and those around the world who perhaps we'll never 
+    know and who every single day make what they believe is the 
+    right thing even if that means going against their own interests.
+    
+    freedom of choice. that's what made of us humans.
+
+		
+	
+    so now that Snowden has stepped up to prove what we have been tried to 
+    tell you for the last years, we consider ourselves on vacations. 
+    work is still going on but, now we've got rid of the FBI influence, 
+    we decided to play things with our own timings and rules.
+    so what today?
+    today we want to share some thoughts, concepts and stuff about 
+    safe irc/im communications and openssl.
+    stuff that could be useful for our fellows to avoid some problems.
+    and bringing the mpOTR gift to our IRC/IM communications.
+   
+    THE GIVING STUFF THINGIE...IS THAT WHATS ABOUT THANKSGIVING, INNIT?
+    
+    (if you dont care about details and just want the toy and candy
+    just skip to the 'WHAT THE FUCK THEN fuckNSA DOES????' part)
+      
+    
+    Background
+    ----------
+    
+    well all this started by accident, it's a funny story  
+    involving sex, hacking, japanese girls, NSA superspookcomputers,
+    Julian Assange running naked through the underground of london
+    and General Keith Alexander's personal pink tutus collection.
+    so here we go:
+    Once upon a time, in some remote irc channel on some hidden service,
+    a bunch of guise trying to trade cool stuff were 
+    dragged into the following conversation 
+    (convo lightly changed for the sake of privacy):
+	
+	  xx  > do u have otr?
+	  yy  > hold on, im sitting on a pwnd box, lemme check
+	  yy  > nah, cant quick install it asap. i could compile and install it
+	  yy  > but no time for it
+	  yy  > what about blowjob?
+	  xx  > ...
+	  yy  > blowjob.pl i mean
+	  xx  > lololol
+	  yy  > u irssi?
+	  yy  > well its a quicky one at least
+	  xx  > blowfish is useless man
+	  yy  > anyway its all fine about otr but not sure about how it really works
+	  yy  > didnt check the code yet
+	  yy  > but i would prefer something i can tinker with, and easier to move with
+	  yy  > when im jumping box to box so.. the perl script
+	  xx  > okok at least gimme 2 min, can u check if you have some Crypt:: algo installed
+	  yy  > wait
+	  yy  > can get Rijndael quickly
+	  xx  > ok cool
+	  xx  > get it installed and gimme 2 min
+	  xx  > ok check this paste https://pastee.org/xxxxx
+	  xx  > there, just a modified blowjob to use AES instead of blowfish, defaults to 256
+	  xx  > ok?
+	  yy  > got it
+	  xx  > go to the other win and gimme a pass
+	  yy  > ok
+	
+    ok..yeah..it was a quick solution to keep going on with the chat, thou not the best one. 
+    even when we were able to deploy a stronger cipher algorithm we were lacking 
+    of some important part, like solving a shared passphrase exchange. 
+    so we kept thinking about it. yeah we love 2 irc, theres no many popular 
+    options for encryption on it, we could use otr for irssi thou the current 
+    implementation seem lil bit buggy, otr 2 protocol look quite good but it's 
+    not always available for every situation sadly and even when ppl use it
+    not everyone understand whats going on on the background, it just works 
+    for many ppl and thats enough but well perhaps some other ppl would prefer 
+    to get more control about whats going on and probably tweak and modify
+    it as they think it fits better, like a group using their own 
+    diffie-hellmann parameters or ciphers or whatever. so basically we were 
+    discussing later this issue whilst modifying the original blowjob.pl
+    it was funny.
+    so we ended up with some PoC about many ideas we were discussing about. 
+    we read the OTR 2 protocol, we discussed about cipher algorithms, 
+    about openssl thingies, about NSA, FBI and other shits. 
+    what follows its the product of that dialog.
+  
+    Goddess on charge: Rinko Kikuchi  B====D
+	
+	
+    first:
+    we tried at the beginning to rely mainly on openssl 
+    cause it's installed by default on many systems
+    but the first problem was about what could be leaked and 
+    watched through the process list, yeah we could 
+    have just used files for everything but at the end 
+    we ended up lurking on many shits and discovering 
+    some interesting stuff. so we chose Camellia as cipher,
+    https://en.wikipedia.org/wiki/Camellia_(cipher) 
+    cause we don't trust AES anymore.
+
+    check the camellia code please. original camellia.c, camellia.h and 
+    camellia on pure perl are available on the repository 
+    but you can google them too.
+	
+    we use Camellia 256
+	
+    Crypt::Camellia
+    or 
+    Crypt::Camellia_PP
+	
+    we strongly suggest you to install them by yourself, by the alikes of using cpan,
+    but, for a quickie, we made some ready-to-go .deb packages
+    containing the originals without modification, cause well, 
+    it seems there aren't .deb packages available on the
+    debian repositories. and when you're using some stuff temporarily sometimes 
+    you don't have time to cpan burdens.
+	
+    so well then we discovered that the Crypt::CBC's password based key derivation fn
+    was inspired by the openssl passphrase base key derivation fn and the use of a salt
+    so using salts are good. but well, Crypt::CBC shared the fate of openssl... 
+    they both use md5 as default to hash the passphrase and salt. 
+    and we all know md5 has many issues about collisions and shits. 
+    if you are using openssl for symmetric encryption, 
+    it defaults to use md5 on 1 single round. 
+    eventually ppl could use the undocumented '-md <digestAlgorithm>' 
+    flag to change this default.
+    thought even when it would be possible to,    
+    for example:                                                                    
+                                                                                
+    cat testtxt.txt | openssl enc -camellia-256-cbc -e -a -salt -md sha512  
+    
+            ----------------------------------- 
+           | extracted from openssl's enc.c:   |
+           |                                   |
+           | if (dgst == NULL)                 |
+           |     {                             |
+           |      dgst = EVP_md5();            | 
+           |      }                            |
+            -----------------------------------
+    
+    < kayla> lololol md5    
+                                                                           
+    you are still limited to use 8 byte salts, even if you try to manually  
+    set, for example, a 16 byte salt manually like this:                   
+                                                                             
+    cat testtxt.txt | openssl enc -camellia-256-cbc -e -a  \                 
+                            -S 9e5de8d47165d15c46a4dca04c3352ce -md sha512  
+                          
+    because this                      
+         --------------------------------------                       
+        | extracted from openssl's evp.h:      |
+        |                                      |
+        | #define PKCS5_SALT_LEN            8  |                        
+        |                                      |
+         --------------------------------------          
+	
+     -------------------------------------------------------------------------
+    |  and also this                                                          |
+    | again from openssl's enc.c:                                             |
+    |                                                                         |
+    | EVP_BytesToKey(cipher,dgst,sptr,                                        |
+    | (unsigned char *)str,                                                   |
+    |   strlen(str),1,key,iv);                                                |
+    |                                                                         |
+    | so checking... evp_key.c :                                              |
+    |                                                                         |
+    | int EVP_BytesToKey(const EVP_CIPHER *type, const EVP_MD *md,            |
+    |        const unsigned char *salt, const unsigned char *data, int datal, |
+    |        int count, unsigned char *key, unsigned char *iv)                |
+    |                                                                         |
+    |   [...]                                                                 |
+    |                                                                         |
+    |   for (i=1; i<(unsigned int)count; i++)                                 |
+    |       {                                                                 |
+    |       if (!EVP_DigestInit_ex(&c,md, NULL))                              |
+    |           goto err;                                                     |
+    |       if (!EVP_DigestUpdate(&c,&(md_buf[0]),mds))                       |
+    |           goto err;                                                     |
+    |       if (!EVP_DigestFinal_ex(&c,&(md_buf[0]),&mds))                    |
+    |           goto err;                                                     |
+    |       }                                                                 |
+    |                                                                         |
+     -------------------------------------------------------------------------
+
+    > really guise... defaults to count = 1 ?
+    > #?@!%    
+ 
+ 
+    wat the fuck was that?
+    fuck with pkcs5 on these fuckin crazy times of mass surveillance
+    if this was a decision made to keep retro-compatibility,
+    why dont we also make enc algo to default to the caesar cipher?
+    so we could easily decrypt also our old papers from the roman empire times, huh? 
+
+                                                                         
+    we wrote a patch for the openssl commandline utility thought        
+    well...lets be honest:                                                      
+    we don't think it will make it through mainstream considering it would      
+    be coming from us (we tried on the past, didnt work)
+    but whoever from the OpenSSL community would be          
+    able to easily implement it.                                                
+    the patched version works on this way:                                      
+    example: 
+                                                                               
+    cat testtxt.txt | openssl enc -camellia-256-cbc -e -a -fuckNSA              
+                                                                                
+    this enable to default 16 byte salts and the use of the algo sha512 breaking
+    pkcs5 lines but wtf anyway                   
+    longer salts should be available to be used ofc.                            
+    also (currently being tested) it would be possible to do symmetric          
+    encryption with 2nd-stage-passphrases, derived from an additional extra     
+    function that complements the standard method                               
+    Example:                                                                    
+    cat testtxt.txt | openssl enc -camellia-256-cbc -e -a  \                    
+                                     -fuckNSA -KeithAlexanderLovesCocks       
+     
+    (yeah he and his transplanted hair loves cocks )                              
+    will pass the given passphrase to the 'KeithAlexanderLovesCocks'            
+    function (a PoC already implemented into the 'fuckNSA.pl' irssi perl script 
+    for secure communications and also into the simple commandline              
+    encryption utility 'nonsa.pl')                                              
+    this function will derive a new passphrase (or proto-key seed)              
+    that will...seed(sic) the iv and key derivation standard procedure.         
+    think about it as something that produces complex passphrases               
+    from (possible) weaker and simpler ones; eventually forcing an adversary    
+    aka FBI, NSA, Teletubbies, Cartman, etc...                                  
+    into building tables for all possible combinations of the                   
+    sha512 output (for example) and blah blah... 
+    or well..at least add the fucking scrypt snippet into it....  
+    you can use also just go gpg, way. installed by default on many *nices 
+    thou that doesnt change the fact openssl must modify some basic stuff to 
+    fit modern times.
+    
+    so well, we touched Crypt::CBC to address this whole thingie,
+    enabling on it 16 byte long salts and sha512 digest algo. 
+    We make available our version of CBC.pm in the repository
+    and we made a .deb package to quick install it. (we worked around the 
+    security of dh-make-perl to forge it)
+    we strongly suggest you to read the code first, verify you r fine with it
+    and then install the .pm by yourself.   
+    
+    so thats all about perl modules needed to run our fuckNSA.pl 
+    we use those 2 modules, also check if your Digest module is updated. 
+    and we kept openssl for dh and rsa keys stuff to avoid demanding 
+    more perl modules to be installed, etc.
+    
+    HERE THE CANDY!!!
+    
+    WHAT THE FUCK THEN fuckNSA DOES????    ..mpOTR man, its all about mpOTR
+    -----------------------------------
+    
+    it implements advanced encryption over IM/IRC communications resolving 
+    the how-sharing-the-fucking-passphrase problem & deploying an inspired OTRv2 
+    key exchange agreement. it uses Camellia256, DH keys of 4096 bits, RSA 
+    keys of 4096 bits and sha512, sha256, etc. it produces 2 keys: one for encrypted
+    communications and the second one to use on file encryption (in case
+    ppl need to share stuff) it implements a flexible mpOTR solution, flexible
+    enough to be easily hackable, letting a group of ppl on a given channel for 
+    example to exclude a non-trusted part (aka FBI snitch) from knowing other keys 
+    used for that channel, the use of temporary common keys to reduce flooding, the use 
+    of individual keys and all & whatever u prefer to do. If a computer belonging to
+    some individual is seized by FBI, only last keys used would be compromised and only
+    those ones shared with some individuals for the last conversation the individual
+    has participated, therefore not compromising conversations that happened between 
+    other individuals on the same channel at different times. Users retain full control of the 
+    decisions to make. the DH parameters are easy to change, so different 
+    groups can easily employ their own parameters with keys of 16384 bits for example. 
+    it offers good verbosity and keep history of your peer's fingerprints in case 
+    you need to check it later, when you go full paranoid, and many other etc & etc...
+  
+    go to 
+    https://github.com/j0hnnMcCock/fuckNSA  
+    
+    so:
+    1 READ THE FUCKING CODE
+    2 READ THE FUCKING CODE
+    3 READ THE FUCKING CODE
+    4 IMPROVE IT AND ENJOY IT
+  
+  
+    
+    also...wtf Keith Alexander does with his hair???
+    stop spending our taxes into your hair transplantation ops
+    we know that your hair is coming from your ass!!!
+    :(  
+    D:
+    
+    how to install:
+ 
+    go here
+    https://github.com/j0hnnMcCock/fuckNSA    
+    
+    put fuckNSA.pl on your irssi script folder for example
+    like:
+    ~/.irssi/scripts/fuckNSA.pl  
+    and then:
+    /script load fuckNSA.pl  
+    /fucknsahelp  
+    
+    < kayla> that was silly to explain...  :o
+    
+    requirements:
+    install Crypt::Camellia or Crypt::Camellia_PP
+    the pure perl version can slow down things lil bit
+    but perhaps it's the simplest to get installed 
+    quickly on the run
+    
+    put CBC.pm and Camellia_PP.pm
+    on a 'Crypt' folder where you have your perl modules
+    example on freeBSD:
+    /usr/local/lib/perl5/5.*/Crypt/CBC.pm
+    /usr/local/lib/perl5/5.*/Crypt/Camellia_PP.pm
+    
+    (yeah fuckNSA.pl works not only on Linux but on freeBSD too, 
+    and it rocks there)
+    
+    it works on OSX too but... 
+    
+    # ATTENTION OSX USERS # 
+    Apple couldnt have better idea than fuck openssl even more compiling the
+    default installed version without 'pkeyutl' nor camellia algorithm neither
+    why? WHY APPLE???
+    so theres no option guise and you need to install your own openssl thingie
+    check internetz for that, its not that difficult. 
+    
+    
+    ofc you can modify the 
+    whole thingie to tap on gpg instead. so be free to do what u want.
+    
+    
+    check the 'INSTALL' file for more info
+    if you want to change from Camellia_PP to Camellia
+    dont forget to modify fuckNSA.pl (commenting the option)
+    
+    tips:
+    tune the irssi builtin flood control to speed up the key exchange process
+    example:
+    { cmds_max_at_once = "256"; cmd_queue_speed = "15ms"; }
+    
+    
+    code is easy hackable to make suspected fbi snitches or regimes'spiez (for example)
+    into believing they ve been infiltrating a conversation 
+    whilst sensitive parts of it
+    are being modified on the fly for them.
+    
+    TO-DO and how to help:
+    port fuckNSA for libpurple and other clients (pl0x help, we r lazy cunts)
+    further testing and fix whatever appearing buggy, remember we 
+    wanted to release this for thanksgiving so it needs more testing & blah blah
+    keep improving it
+    write tutorials, explain others how to use it, read the code first.
+    ...hm....READ THE CODE FIRST.
+    
+    https://github.com/j0hnnMcCock/fuckNSA   
+    SHA256SUMs    
+
+b276785b0f84bc2713122d8b9588c44a8f3b63155a97b8b57547b9f63674705e  fuckNSA.pl	    
+33a5bb69f438b1e8dd05799531fe9d726c181d2662a0237ca69992f7387e8c59  nonsa.pl    
+    
+77c3c8cca0476965e82327c55e136b09e1cb876ca4bb333dfa538b5ad4818af9  Camellia_PP.pm
+5b24c307141d78b8224a21f3abd1efb099bdc821709520349bfa6b31bb241644  CBC.pm
+
+43f50d2faa7fc28ca2a0267fa7456a0bdf5eec16e0cb84842166dbd242d20e0a  libcrypt-camellia-perl_2.02-1_all.deb
+e137d9b335facb9aeaa7c77b424f8414c970a01e406d4a14b3b81c1b2b267344  libcrypt-camellia-perl_2.02-1_amd64.deb
+e3df84cfa22eb4d980317faf1e03cd567c0cdc80e1209ab7809418d1f74a980f  libcrypt-camellia-pp-perl_0.02-1_all.deb
+74cf6b69cbd379566168e5ae605317e7c935d04023fe9fae52ae0fd01cb1a9c8  libcrypt-cbc-perl_2.33-1_Lulzsec-mod_all.deb
+
+3c35aa070086abacf429fabb75c696b963c8904475502ddc25f9828d8992f2c1  camellia.c
+0d4acde103ad556aac4ec502358113ec7fdefc543266e68bf748a6048231ceaa  camellia.h
+
+
+    
+       LICENSE
+       -------
+    
+      ##############################################
+      ##             LulzSec License              ##
+      ##                                          ##
+      ## Do whatever you fucking want with this,  ##
+      ## but you must produce at least one act of ##
+      ## civil disobedience against the System    ##
+      ## and its rules, even if that represents   ##
+      ## not honoring this license at all.        ##
+      ## Fuck Cops' daughters, send cigarettes    ##
+      ## to those of us who are jailed, smash     ##
+      ## down CCTV cameras and...                 ##
+      ## also cocks, because lulz.                ##
+      ##                                          ##
+      ##############################################
+
+
+
+    the fucking idiots @ FBI were trying to take our bittie$ 
+    so pl0x show some love
+    and drop some pennies to this one:
+	
+    1KrvDzgWrzJeWjzEDPnxziUJbrPNKpS3bs
+	
+    ^ bitcoin
+	
+	
+	
+    Remember always the biggest danger we faced came from the human
+    side (aka Sabu, other lame informants & other kind of feds'bitches)
+    not from the tech side and if it happened, it came from mistakes 
+    made by ourselves or from the h4k0rz' usual drama & mutual pwnage.
+    FBI can't find even when their wives are cheating on them.
+    So be careful about who you trust to and what you are doing and 
+    how you are doing it, always. stay safe <3
+    and code your freedom.
+	
+	
+    < theo> & use condoms for buttraeping!
+
+	
+    dont forget to go to this CCC conf, even if many of us cant because feds lurking.
+    feds suck, d'you know?	
+	
+    if u have read all this PR without having brainzcancer
+    at least because grammar
+    u have our respect
+
+    we wont give more details about this till Adrien Chen appears
+    on the front page of Hustler, disguised as a baby on pink clothes
+    with a buttplug on his mouth and...
+    ok, we're joking...
+
+
+
+"Now I know what a ghost is. Unfinished business, that's what."
+― Salman Rushdie, The Satanic Verses 
+
+
+                ``;`                              
+             `,+@@@+                              
+           .+@@@@@@@;                             
+        `;@@@@@@@@@@@                             
+       +@@@@@@@@@@@@@:                            
+     ;@@@@@@@@@@@@@@@@                            
+   `@@@@@@@@@@@@@@@@@@`                           
+   `@@@@@@@@@@@@@@@@@@#                           
+    .@@@@@@@@@@@@@@@@@@,                          
+     :@@@@@@@@@@@@@@@@@@      .'@@                
+      #@@@@@@@@@@@@@@@@+;  .+@@@@@                
+      `@@@@@@@@@@@@@#;;+@+#@@@#:`                 
+       #@@@@@@@@@@';'@@@@@@@:`                    
+       `@@@@@@@+;;+@@@@@##`                       
+        .@@@#;;+@@@@@#+',.,'.                     
+         +;;'#@@@@#+;`      ,:                    
+         .#@@@@#++:  @.    ...`                   
+      `'@@@@#++'. +  .#++;;+  +                   
+    ,@@@@@#++:``::+   `',:+,. ,                   
+  `@@@@#, #+` ',.`'.   +` ``  `,  .+              
+   @@:`  ,+. ,`:``.:   '. .',+++   #              
+   ``    #+`++,.`:,``    :`+@@'@@@@'    ````      
+         #'`#+:`.,`:` .@@@+@#  +`.      :  `:     
+         #:: +.`,.., `@@,#@':. +        :   '     
+         #: ` ',:`,, @#``    + +        ' `,;     
+         #: ` `:''`  @` #:.. , '        #+++:     
+         #: ,     ;#'#  + :   `:         #++      
+         #; '     `''         ,          '.       
+         ;' '                 #         `@#       
+          #.;                ;`       ,#.:;       
+          `+;               '.        @   `       
+           :#;            `@:        :`  `,       
+            .#+;        `'+.'        +            
+              .@++#'+@+@++` ;@.     '             
+               `' ., ` #:`# `+.#+  :.             
+                ., :  @#;.`;`:  `#@.              
+                 +``,.;`@+,. '#                   
+                 @' ' ;`@:+`#`;`                  
+                `#+  ,'`#  :.  '                  
+                ' #.  :`#` '`. +                  
+                # +.  .:+: :`. .                  
+               `, +,   ..+ '`   :                 
+               ;` #+@:,:#.;``   '                 
+               #'##:#+.  : `;   ;                 
+               #. #:      `'`   :                 
+                  #,        `   .         
+       2013. All Your Base Are Belong To Us.

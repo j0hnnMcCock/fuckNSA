@@ -1,0 +1,49 @@
+    
+    INSTALLING THE SHIT
+    
+    fuckNSA.pl was tested on Linux, FreeBSD, NetBSD, OSX, under different architectures intel, ARM, SPARC
+    
+    put CBC.pm and Camellia_PP.pm
+    on a 'Crypt' folder where you have your perl modules
+    example: 
+    
+    on FreeBSD:
+    
+    /usr/local/lib/perl5/5.*/Crypt/CBC.pm
+    /usr/local/lib/perl5/5.*/Crypt/Camellia_PP.pm
+
+    
+    on Debian: 
+    
+    /usr/share/perl5/Crypt/CBC.pm
+    /usr/share/perl5/Crypt/Camellia_PP.pm
+
+    
+    on OSX: 
+    
+    install Developer's command line tools
+    use macports, fink or homebrew to install irssi
+    needed: install openssl by your own. the Apple official version is flawed, 
+    lacking features. (no 'pkeyutl' and no camellia support for example, and you need pkeyutl) 
+    WHY APPLE? WHY?
+    install Crypt/CBC.pm and Crypt/Camellia_PP.pm on both perl5 folders
+    /System/Library/Perl/5.1*
+    
+    --
+
+    put fuckNSA.pl on your irssi script folder 
+    for example:
+    
+    ~/.irssi/scripts/fuckNSA.pl  
+    
+    and then inside irssi:
+    
+    /script load fuckNSA.pl
+    
+    /fucknsahelp
+        
+    Tips:
+    tune the irssi builtin flood control to speed up the key exchange process
+    example:
+    cmds_max_at_once = "256"
+    cmd_queue_speed = "15ms"
