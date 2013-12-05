@@ -1,0 +1,72 @@
+
+
+Thanks to those ones looking at the code, guise
+
+pl0x avoid if u can, this kind of comment
+"oh, that's pretty safe, they encrypt the public key https://github.com/j0hnnMcCock/fuckNSA/blob/master/fuckNSA.pl#L1395 … What about the private key? "
+^
+thats the ephemeral dh public key being encrypted to be sent right after
+the also ephemeral dh private key must not be sent, like..ever... lolololo <3
+
+also
+"doing 1 on 1 handshakes in a multiparty may not be the way to go. We probably need another crypto algorithm to exchange keys"
+
+we totally agree with that DH can manage several keys thou perhaps theres no yet an efficient implementation 
+about how to do that, right now.
+we believe there are many dilemmas to resolve
+and many thinks to question about mpOTR stuff itself, thou we tried to use this disadvantage for us:
+so for us this could be used, for example, to customise code to apply regex to erase some kinds of values like IP addresses from 
+the text to be sent, on real time, whilst u chat and then apply this filter to specific nicks on a chat room, 
+for people suspected of being snitches, or to help injecting on purpose some extra 
+shit on the text before being encrypted so, as watermarks, if a log leaks happens u could identify the origin of such leak easily
+ejection and filtering. it is a needed feature for us.
+Do you all remember the Sabu thingie, innit?
+
+the script was not intended to be ready for public but to kick off some brainstorming about resolving the whole mpOTR thingie
+cause well, people need it right now and not tomorrow
+
+so we tried to get for ourselves something that works right now on the meanwhile better tools are engineered
+the script was a needed solution for our very own communications
+our communications happens under this context:
+group of less than 6 individuals working under knowledge they could be infiltrated
+by the FBI, because feds are trying to catch them permanently...u know 
+people on such team works with fluid mobility, switching computers and OSes all time
+even establishing communications from hardware as uncommon as routers
+it requires avoiding compiling stuff cause it's not always possible to do that on some 'borrowed' box
+it must be quick to be installed, in 2 minutes, everywhere.
+it's required to avoid installing too many extra modules as possible (so openssl stay there)
+we dont trust AES, CTR modes, we dont think 8 bytes long salts are enough, we dont like passphrase based key derivation based on md5 
+why nobody talks about this OpenSSL thingie anyway?
+it was careless and messy coded cause we r careless and messy in general
+and because we dont like code styling pattern recognition coming from nsa
+people should be able to change all parameters on it and fork different version as it fits to obfuscate methods
+thats the thing, its not set to be standard but 
+to be used modified and customised by diff groups and improved by those who are able to 
+many questions rise when u deal with mpOTR, too many practical limitations and difficulties. 
+but then again we need something now
+and it must work...
+
+during this thing u need to take decisions, not easy ones,
+like making the authentification for each message vulnerable to be forged or not so much
+on the middle term, whilst providing enough proof of authenticity on real time,
+all this for the sake of keep some level of deniability. we paid a lot of attention to OTR key exchange protocol
+but we r getting rid of the hmac key post-convo publishing compensating such issue with small and weaker hashes
+people should think about better ways
+
+"plausible deniyability is already a dangerous concept. It will not hold automatically in court. Or anywhere else for that matter."
+
+we r not sure about it
+lawyers should help to spot some light on this point
+thou we wouldnt risk on it.
+
+besides all limitations
+it implements an OTR v2 protocol key exchange alike method, read the pdf on the repo and the Camellia encryption used is solid
+and it works for us, today, not tomorrow, because today is already late and many friends have being jailed already
+and we wanted to share it with all of you
+cause we hope that at least it could help someone too, somewhere and somehow
+
+love and cocks <3
+stay safe 
+
+
+
